@@ -67,7 +67,7 @@ SchoolPerformanceApp <- function() {
     dashboardSidebar(
       sidebarMenu(
         menuItem(tabName = "home", text = "Home", icon = icon("home")),
-        menuItem(tabName = "another", text = "Info", icon = icon("info"))
+        menuItem(tabName = "info", text = "Info", icon = icon("info"))
       ),
       color="black",
       inverted=TRUE,
@@ -75,45 +75,70 @@ SchoolPerformanceApp <- function() {
       class="ui secondary vertical menu"),
     dashboardBody(
       useShinyjs(),
-      div(class="ui stackable grid",
-          div(class="row",
-              div(class="seven wide column",
-                div(class="ui padded segment",
-                    div(class="ui grid",
-                      div(class="five wide column",selectInput("Position","Position",choices=c("Superintendent"=1,"Principal"=2),selected=1)),
-                      div(class="six wide column",selectInput("SchoolCounty",
-                                                              "School County",
-                                                              choices=sort(unique(TopCounties$county)))),
-                      shinyjs::hidden(div(class="five wide column",id="SchoolUIDDiv",selectInput("SchoolUID","School ID",choices=""))))
+      tabItems(
+        tabItem(tabName="home",
+                div(class="ui stackable grid",
+                    # div(class="row",
+                    # div(class="three wide column",
+                    #      div(class="ui padded segment",
+                    #             selectInput("Position","Position",choices=c("Superintendent"=1,"Principal"=2),selected=1),
+                    #             selectInput("SchoolCounty",
+                    #                         "School County",
+                    #                         choices=sort(unique(TopCounties$county))),
+                    #            shinyjs::hidden(div(id="SchoolUIDDiv",selectInput("SchoolUID","School ID",choices="")))
+                    #            )
+                    #     ),
+                    # div(class="row",
+                    div(class="four wide column",style="min-width: 250px; max-width: 350px",
+                        div(class="ui padded segment",
+                            selectInput("Position","Position",choices=c("Superintendent"=1,"Principal"=2),selected=1),
+                            selectInput("SchoolCounty",
+                                        "School County",
+                                        choices=sort(unique(TopCounties$county))),
+                            shinyjs::hidden(div(id="SchoolUIDDiv",selectInput("SchoolUID","School ID",choices="")))
+                        ),
+                        div(class="ui padded segment",
+                            h3("Academic Performance Index (API)"),
+                            h3(class="ui grey sub header",textOutput("CountyName")),
+                            div(class="ui row",
+                                h1(class="ui header",textOutput("CountyAPI"),inline=TRUE)),
+                            h3(class="ui dividing sub header","API By School Type"),
+                            plotOutput("CountySchoolTypeAPI",height = "125px"),
+                            h3(class="ui dividing sub header","API By Community Type"),
+                            plotOutput("CountyCommunityTypeAPI",height = "125px"))
+                    ),
+                    shinyjs::hidden(div(id="PrincipalDiv",class="four wide column",
+                                        MySchoolPerformanceUI("Principals"))
+                    ),
+                    div(class="eight wide column",
+                        div(class = "ui very padded segment",
+                            h3("Complete Performance Data"),
+                            reactableOutput("Summary")
+                        ),
+                        shinyjs::hidden(div(id="SpielmanTatumDiv",SpielmanTatumPerformanceUI("SpielmanTatum"))),
+                        shinyjs::hidden(div(id="ChrisWardDiv",ChrisWardSchoolPerformanceUI("ChrisWard")))
                     )
+                    # )
                 )
-              ),
-          div(class="row",
-            div(class="four wide column",style="min-width: 250px; max-width: 350px",
-                div(class="ui padded segment",
-                    h3("Academic Performance Index (API)"),
-                    h3(class="ui grey sub header",textOutput("CountyName")),
-                    div(class="ui row",
-                      h1(class="ui header",textOutput("CountyAPI"),inline=TRUE)),
-                    h3(class="ui dividing sub header","API By School Type"),
-                    plotOutput("CountySchoolTypeAPI",height = "125px"),
-                    h3(class="ui dividing sub header","API By Community Type"),
-                    plotOutput("CountyCommunityTypeAPI",height = "125px"))
                 ),
-            shinyjs::hidden(div(id="PrincipalDiv",class="four wide column",
-                MySchoolPerformanceUI("Principals"))
-            ),
-            div(class="eight wide column",
-                div(class = "ui very padded segment",
-                    h3("Complete Performance Data"),
-                    reactableOutput("Summary")
-                ),
-                shinyjs::hidden(div(id="SpielmanTatumDiv",SpielmanTatumPerformanceUI("SpielmanTatum"))),
-                shinyjs::hidden(div(id="ChrisWardDiv",ChrisWardSchoolPerformanceUI("ChrisWard")))
-            )
-          )
+        tabItem(tabName="info",
+                div(class="five wide column",
+                  div(class="ui padded segment",
+                      h3("About the Application"),
+                      p("This application demonstrates how R Shiny can selectively present data visualizations based on user credentials and filter inputs"),
+                      p("It reveals how an enterprise-wide dashboard can accommodate customizations for stakeholders within an organizations who need to see a variation of the report."),
+                      p("These methods do not impact the performance of the application and can be done in a way that’s scalable and easy-to-maintain"),
+                      p("You can test this yourself on the application by completing the following:"),
+                      div(class="ui bulleted list",
+                          div(class="item","Change the ",strong("Position")," filter to ",strong("Principal")),
+                          div(class="item","Change the ",strong("School County")," filter to ",strong("Chris Ward")," to see a custom “Worst Schools by API” visualization"),
+                          div(class="item","Change the ",strong("School County")," filter to ",strong("Chris Spielman")," or ",strong("Jack Tatum")," to see a custom “Subsidized Meal Comparison” visualization"),
+                          ),
+                      p("The data set is fakeAPI and comes from the stevedata package.")
+                      )
+                )
         )
-        
+      )
     )
   )
   
