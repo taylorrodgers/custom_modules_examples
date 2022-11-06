@@ -76,38 +76,44 @@ SchoolPerformanceApp <- function() {
     dashboardBody(
       useShinyjs(),
       div(class="ui stackable grid",
-          div(class="three wide column",
-              div(class="ui padded segment",style="min-width: 175px; max-width: 350px",
-                  selectInput("Position","Position",choices=c("Superintendent"=1,"Principal"=2),selected=1),
-                  selectInput("SchoolCounty",
-                              "School County",
-                              choices=sort(unique(TopCounties$county))),
-                  shinyjs::hidden(div(id="SchoolUIDDiv",selectInput("SchoolUID","School ID",choices=""))))
+          div(class="row",
+              div(class="seven wide column",
+                div(class="ui padded segment",
+                    div(class="ui grid",
+                      div(class="five wide column",selectInput("Position","Position",choices=c("Superintendent"=1,"Principal"=2),selected=1)),
+                      div(class="six wide column",selectInput("SchoolCounty",
+                                                              "School County",
+                                                              choices=sort(unique(TopCounties$county)))),
+                      shinyjs::hidden(div(class="five wide column",id="SchoolUIDDiv",selectInput("SchoolUID","School ID",choices=""))))
+                    )
+                )
               ),
-          div(class="three wide column",
-              div(class="ui padded segment",style="min-width: 250px; max-width: 350px",
-                  h3("Academic Performance Index (API)"),
-                  h3(class="ui grey sub header",textOutput("CountyName")),
-                  div(class="ui row",
-                    h1(class="ui header",textOutput("CountyAPI"),inline=TRUE)),
-                  h3(class="ui dividing sub header","API By School Type"),
-                  plotOutput("CountySchoolTypeAPI",height = "125px"),
-                  h3(class="ui dividing sub header","API By Community Type"),
-                  plotOutput("CountyCommunityTypeAPI",height = "125px"))
-              ),
-          shinyjs::hidden(div(id="PrincipalDiv",class="three wide column",
-              MySchoolPerformanceUI("Principals"))
-          ),
-          div(class="eight wide column",
-              div(class = "ui very padded segment",
-                  h3("Complete Performance Data"),
-                  reactableOutput("Summary")
-              ),
-              shinyjs::hidden(div(id="SpielmanTatumDiv",SpielmanTatumPerformanceUI("SpielmanTatum"))),
-              shinyjs::hidden(div(id="ChrisWardDiv",ChrisWardSchoolPerformanceUI("ChrisWard")))
+          div(class="row",
+            div(class="four wide column",style="min-width: 250px; max-width: 350px",
+                div(class="ui padded segment",
+                    h3("Academic Performance Index (API)"),
+                    h3(class="ui grey sub header",textOutput("CountyName")),
+                    div(class="ui row",
+                      h1(class="ui header",textOutput("CountyAPI"),inline=TRUE)),
+                    h3(class="ui dividing sub header","API By School Type"),
+                    plotOutput("CountySchoolTypeAPI",height = "125px"),
+                    h3(class="ui dividing sub header","API By Community Type"),
+                    plotOutput("CountyCommunityTypeAPI",height = "125px"))
+                ),
+            shinyjs::hidden(div(id="PrincipalDiv",class="four wide column",
+                MySchoolPerformanceUI("Principals"))
+            ),
+            div(class="eight wide column",
+                div(class = "ui very padded segment",
+                    h3("Complete Performance Data"),
+                    reactableOutput("Summary")
+                ),
+                shinyjs::hidden(div(id="SpielmanTatumDiv",SpielmanTatumPerformanceUI("SpielmanTatum"))),
+                shinyjs::hidden(div(id="ChrisWardDiv",ChrisWardSchoolPerformanceUI("ChrisWard")))
+            )
           )
-      )
-      
+        )
+        
     )
   )
   
